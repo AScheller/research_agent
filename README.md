@@ -14,7 +14,9 @@ and critiques its own draft before delivering it. Runs against any OpenAI-compat
 
 **English** · [Deutsch](README.de.md)
 
-<img src="docs/screenshots/run-dark.png" alt="Research run with workflow timeline and cited report" width="100%">
+<img src="docs/screenshots/themes/graphite-dark.png" alt="Research run with workflow timeline and cited report" width="100%">
+
+**[▶ Watch the demo video (MP4)](docs/demo.mp4)**
 
 </div>
 
@@ -49,7 +51,8 @@ single Rust binary with a polished, live-updating web UI.
 - 🕘 **History:** runs are stored as JSON and can be replayed at any time. `#run=<id>&expand` links
   open a run with all steps expanded.
 - 🌍 **German & English:** the UI and the report language can be switched independently.
-- 🌗 **Dark & light themes**, responsive layout, no frontend build step.
+- 🎨 **8 themes:** four palettes (*Graphite*, *Aurora*, *Nord*, *Sepia*), each in dark and light, plus a
+  *System* mode that follows your OS. Responsive layout, no frontend build step.
 - 🦀 **One small binary:** axum + tokio. The UI is embedded, and a TOML config can also be edited from the UI.
 
 ## How it works
@@ -76,13 +79,24 @@ flowchart LR
 5. **Final writer:** produces the comprehensive report. The references section is appended from the
    registry and only lists sources that are actually cited.
 
-## Screenshots
+## Demo & screenshots
+
+**[▶ Demo video (MP4)](docs/demo.mp4):** a live run on Gemma 4. It shows planning, tool calls,
+drafting, review, the final report with citations, theme switching and the language switch. Waiting
+times are sped up.
 
 | Behind the scenes: tool calls & hits | Start page |
 |---|---|
-| <img src="docs/screenshots/workflow-dark.png" alt="Expanded workflow with tool calls"> | <img src="docs/screenshots/home-dark.png" alt="Start page"> |
+| <img src="docs/screenshots/workflow.png" alt="Expanded workflow with tool calls"> | <img src="docs/screenshots/home.png" alt="Start page"> |
 
-<img src="docs/screenshots/run-light.png" alt="Light theme" width="100%">
+### Themes
+
+Pick a theme with the palette button at the bottom of the sidebar. The sun/moon button switches between dark and light.
+
+| | Graphite | Aurora | Nord | Sepia |
+|---|---|---|---|---|
+| **Dark** | <img src="docs/screenshots/themes/graphite-dark.png" alt="Graphite dark"> | <img src="docs/screenshots/themes/aurora-dark.png" alt="Aurora dark"> | <img src="docs/screenshots/themes/nord-dark.png" alt="Nord dark"> | <img src="docs/screenshots/themes/sepia-dark.png" alt="Sepia dark"> |
+| **Light** | <img src="docs/screenshots/themes/graphite-light.png" alt="Graphite light"> | <img src="docs/screenshots/themes/aurora-light.png" alt="Aurora light"> | <img src="docs/screenshots/themes/nord-light.png" alt="Nord light"> | <img src="docs/screenshots/themes/sepia-light.png" alt="Sepia light"> |
 
 ## Quick start
 

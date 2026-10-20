@@ -14,7 +14,9 @@ und prüft den eigenen Entwurf, bevor er ihn abliefert. Funktioniert mit jedem O
 
 [English](README.md) · **Deutsch**
 
-<img src="docs/screenshots/run-dark.png" alt="Recherche mit Workflow-Zeitleiste und Bericht mit Quellenangaben" width="100%">
+<img src="docs/screenshots/themes/graphite-dark.png" alt="Recherche mit Workflow-Zeitleiste und Bericht mit Quellenangaben" width="100%">
+
+**[▶ Demovideo ansehen (MP4)](docs/demo.mp4)**
 
 </div>
 
@@ -49,7 +51,8 @@ ein einzelnes Rust-Programm mit einer Weboberfläche, die sich live aktualisiert
 - 🕘 **Verlauf:** Recherchen werden als JSON gespeichert und lassen sich jederzeit wieder anzeigen.
   Links mit `#run=<id>&expand` öffnen eine Recherche mit allen Schritten aufgeklappt.
 - 🌍 **Deutsch & Englisch:** Oberflächen- und Berichtssprache sind unabhängig umschaltbar.
-- 🌗 **Dunkles & helles Theme**, responsives Layout, kein Build-Schritt fürs Frontend.
+- 🎨 **8 Themes:** vier Farbwelten (*Graphite*, *Aurora*, *Nord*, *Sepia*), jeweils dunkel und hell,
+  dazu ein *System*-Modus, der dem Betriebssystem folgt. Responsives Layout, kein Build-Schritt fürs Frontend.
 - 🦀 **Ein kleines Programm:** axum + tokio, die Oberfläche ist eingebettet. Die TOML-Konfiguration
   lässt sich auch in der Oberfläche bearbeiten.
 
@@ -78,13 +81,24 @@ flowchart LR
 5. **Finaler Writer:** erstellt den umfassenden Bericht. Das Quellenverzeichnis wird aus dem Register
    angehängt und enthält nur tatsächlich zitierte Quellen.
 
-## Screenshots
+## Demo & Screenshots
+
+**[▶ Demovideo (MP4)](docs/demo.mp4):** ein echter Lauf mit Gemma 4. Zu sehen sind Planung,
+Tool-Aufrufe, Entwurf, Review, der fertige Bericht mit Quellenangaben sowie der Wechsel von Theme und
+Sprache. Wartezeiten sind beschleunigt. Die Oberfläche im Video ist auf Englisch.
 
 | Hinter den Kulissen: Tool-Aufrufe & Treffer | Startseite |
 |---|---|
-| <img src="docs/screenshots/workflow-dark.png" alt="Aufgeklappter Workflow mit Tool-Aufrufen"> | <img src="docs/screenshots/home-dark.png" alt="Startseite"> |
+| <img src="docs/screenshots/workflow.png" alt="Aufgeklappter Workflow mit Tool-Aufrufen"> | <img src="docs/screenshots/home.png" alt="Startseite"> |
 
-<img src="docs/screenshots/run-light.png" alt="Helles Theme" width="100%">
+### Themes
+
+Das Theme wählst du über das Paletten-Symbol unten in der Seitenleiste, die Sonne bzw. der Mond schaltet zwischen dunkel und hell.
+
+| | Graphite | Aurora | Nord | Sepia |
+|---|---|---|---|---|
+| **Dunkel** | <img src="docs/screenshots/themes/graphite-dark.png" alt="Graphite dunkel"> | <img src="docs/screenshots/themes/aurora-dark.png" alt="Aurora dunkel"> | <img src="docs/screenshots/themes/nord-dark.png" alt="Nord dunkel"> | <img src="docs/screenshots/themes/sepia-dark.png" alt="Sepia dunkel"> |
+| **Hell** | <img src="docs/screenshots/themes/graphite-light.png" alt="Graphite hell"> | <img src="docs/screenshots/themes/aurora-light.png" alt="Aurora hell"> | <img src="docs/screenshots/themes/nord-light.png" alt="Nord hell"> | <img src="docs/screenshots/themes/sepia-light.png" alt="Sepia hell"> |
 
 ## Schnellstart
 

@@ -25,6 +25,12 @@ const I18N = {
     no_history: 'Noch keine Recherchen.',
     ui_language: 'Sprache der Oberfläche',
     toggle_theme: 'Hell/Dunkel umschalten',
+    choose_theme: 'Design wählen',
+    theme: 'Design',
+    mode_dark: 'Dunkel',
+    mode_light: 'Hell',
+    mode_system: 'System',
+    dismiss: 'Ausblenden',
     settings: 'Einstellungen',
     menu: 'Menü',
     eyebrow: 'Reflective Research Agent — Planung & Tool-Nutzung',
@@ -155,6 +161,12 @@ const I18N = {
     no_history: 'No research yet.',
     ui_language: 'Interface language',
     toggle_theme: 'Toggle light/dark',
+    choose_theme: 'Choose theme',
+    theme: 'Theme',
+    mode_dark: 'Dark',
+    mode_light: 'Light',
+    mode_system: 'System',
+    dismiss: 'Dismiss',
     settings: 'Settings',
     menu: 'Menu',
     eyebrow: 'Reflective Research Agent — Planning & Tool Use',
@@ -376,6 +388,7 @@ const ICONS = {
   redo: '<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   plug: '<path d="M9 2v6M15 2v6"/><path d="M6 8h12v4a6 6 0 0 1-12 0z"/><path d="M12 18v4"/>',
+  palette: '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.3-.3-.3-.5-.8-.5-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4c0-4.4-4-7.8-9-7.8z"/><circle cx="7.5" cy="11.5" r="1.2"/><circle cx="10.5" cy="7.5" r="1.2"/><circle cx="15.5" cy="8.5" r="1.2"/>',
 };
 function icon(name, cls = '') {
   return `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
@@ -705,7 +718,7 @@ const HANDLERS = {
     S.model = ev.model;
     $('#run-q').textContent = ev.prompt;
     $('#run-model').textContent = ev.model;
-    if (ev.web_search === false) notice(t('notice_no_searx'));
+    if (ev.web_search === false) notice(t('notice_no_searx'), 'no_searx');
     setStatus('running');
     startTimer();
   },
@@ -716,7 +729,7 @@ const HANDLERS = {
   },
   notice(ev) {
     const key = ev.code ? `notice_${ev.code}` : null;
-    notice(key && I18N[S.ui][key] ? t(key) : ev.message);
+    notice(key && I18N[S.ui][key] ? t(key) : ev.message, key || ev.message);
   },
   plan(ev) {
     // `#run=<id>&expand` öffnet alle Schritte (z. B. für geteilte Links)
@@ -789,7 +802,7 @@ const HANDLERS = {
     renderReport();
   },
   error(ev) { showError(ev.message); },
-  cancelled() { notice(t('notice_cancelled')); },
+  cancelled() { notice(t('notice_cancelled'), 'cancelled'); },
   done(ev) {
     S.terminal = true;
     S.endTs = ev.ts;
@@ -804,8 +817,11 @@ const HANDLERS = {
   },
 };
 
-function notice(msg) {
-  $('#notices').insertAdjacentHTML('beforeend', `<div class="notice">${icon('info')}<span>${esc(msg)}</span></div>`);
+const dismissedNotices = new Set();
+function notice(msg, key = msg) {
+  const id = `${S.runId}|${key}`;
+  if (dismissedNotices.has(id)) return;
+  $('#notices').insertAdjacentHTML('beforeend', `<div class="notice" data-key="${esc(id)}">${icon('info')}<span>${esc(msg)}</span><button type="button" class="notice-x" title="${t('dismiss')}" aria-label="${t('dismiss')}">${icon('x')}</button></div>`);
 }
 
 function showError(msg) {
@@ -1256,9 +1272,67 @@ async function saveSettings(e) {
 }
 
 // ---------- theme ----------
-function applyTheme(th) {
-  document.documentElement.dataset.theme = th;
-  $('#btn-theme').innerHTML = icon(th === 'dark' ? 'sun' : 'moon');
+// Vorschaufarben je Palette und Modus: [Hintergrund, Karte, Akzent, Text, dezent]
+const PALETTES = {
+  graphite: { name: 'Graphite',
+    dark: ['#0a0a0c', '#151519', 'linear-gradient(135deg,#4f8cff,#3b6fe0)', '#ededf0', '#5a5a64'],
+    light: ['#f6f6f7', '#ffffff', 'linear-gradient(135deg,#2563eb,#1d4ed8)', '#17171c', '#a3a3ad'] },
+  aurora: { name: 'Aurora',
+    dark: ['#080a12', '#121524', 'linear-gradient(135deg,#8b7bff,#5b8cff,#22d3ee)', '#e9ebf8', '#5d6385'],
+    light: ['#f4f5fb', '#ffffff', 'linear-gradient(135deg,#6d5cf5,#4f7cff,#0aa5c4)', '#141a2f', '#9ba1bd'] },
+  nord: { name: 'Nord',
+    dark: ['#242933', '#2e3440', 'linear-gradient(135deg,#5e81ac,#88c0d0)', '#eceff4', '#6f7a8e'],
+    light: ['#eceff4', '#ffffff', 'linear-gradient(135deg,#5e81ac,#4c6a92)', '#2e3440', '#97a1b3'] },
+  sepia: { name: 'Sepia',
+    dark: ['#15110d', '#211b16', 'linear-gradient(135deg,#e0a458,#c9734a)', '#f2eadf', '#716558'],
+    light: ['#f5efe4', '#fffcf6', 'linear-gradient(135deg,#b0601b,#8c4419)', '#2a2017', '#b0a290'] },
+};
+const THEME_MODES = ['dark', 'light', 'system'];
+const systemMode = () => (window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+const resolvedMode = () => (S.themeMode === 'system' ? systemMode() : S.themeMode);
+
+function applyTheme() {
+  const root = document.documentElement;
+  const mode = resolvedMode();
+  root.dataset.palette = S.palette;
+  root.dataset.mode = mode;
+  $('#btn-mode').innerHTML = icon(mode === 'dark' ? 'sun' : 'moon');
+  $$('#seg-mode button').forEach((b) => b.classList.toggle('on', b.dataset.v === S.themeMode));
+  if ($('#tp-grid').dataset.mode !== mode) renderSwatches();
+  $$('#tp-grid .tp-swatch').forEach((b) => {
+    const on = b.dataset.p === S.palette;
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+  });
+}
+
+function renderSwatches() {
+  const mode = resolvedMode();
+  $('#tp-grid').dataset.mode = mode;
+  $('#tp-grid').innerHTML = Object.entries(PALETTES).map(([id, p]) => {
+    const [bg, card, accent, text, faint] = p[mode];
+    return `<button type="button" class="tp-swatch${id === S.palette ? ' on' : ''}" data-p="${id}" aria-pressed="${id === S.palette}">
+      <span class="tp-prev" style="background:${bg}">
+        <span class="tp-card" style="background:${card}"><i style="background:${accent}"></i><b style="background:${text}"></b><b style="background:${faint}"></b></span>
+        <span class="tp-dot" style="background:${accent}"></span>
+      </span>
+      <span class="tp-name">${p.name}</span>
+    </button>`;
+  }).join('');
+}
+
+function setTheme({ palette, mode } = {}) {
+  if (palette && PALETTES[palette]) { S.palette = palette; store.set('ra-palette', palette); }
+  if (mode && THEME_MODES.includes(mode)) { S.themeMode = mode; store.set('ra-mode', mode); }
+  applyTheme();
+}
+
+function toggleThemePop(force) {
+  const pop = $('#theme-pop');
+  const open = force ?? pop.classList.contains('hidden');
+  pop.classList.toggle('hidden', !open);
+  $('#btn-theme').classList.toggle('on', open);
+  $('#btn-theme').setAttribute('aria-expanded', String(open));
 }
 
 // ================================================================
@@ -1279,13 +1353,26 @@ function initSeg(id, key, storeKey) {
 function init() {
   $$('[data-icon]').forEach((el) => { el.outerHTML = icon(el.dataset.icon); });
 
-  let theme = store.get('ra-theme', null);
-  if (!theme) theme = window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  applyTheme(theme);
-  $('#btn-theme').addEventListener('click', () => {
-    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    store.set('ra-theme', next);
-    applyTheme(next);
+  const savedPalette = store.get('ra-palette', null);
+  S.palette = PALETTES[savedPalette] ? savedPalette : 'graphite';
+  const savedMode = store.get('ra-mode', null) || store.get('ra-theme', null); // ra-theme: ältere Version
+  S.themeMode = THEME_MODES.includes(savedMode) ? savedMode : 'system';
+  applyTheme();
+  window.matchMedia?.('(prefers-color-scheme: light)').addEventListener?.('change', () => { if (S.themeMode === 'system') applyTheme(); });
+  $('#btn-mode').addEventListener('click', () => setTheme({ mode: resolvedMode() === 'dark' ? 'light' : 'dark' }));
+  $('#btn-theme').addEventListener('click', (e) => { e.stopPropagation(); toggleThemePop(); });
+  $('#tp-grid').addEventListener('click', (e) => { const b = e.target.closest('[data-p]'); if (b) setTheme({ palette: b.dataset.p }); });
+  $('#seg-mode').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setTheme({ mode: b.dataset.v }); });
+  document.addEventListener('click', (e) => {
+    const inside = e.composedPath().some((n) => n.id === 'theme-pop' || n.id === 'btn-theme');
+    if (!$('#theme-pop').classList.contains('hidden') && !inside) toggleThemePop(false);
+  });
+  $('#notices').addEventListener('click', (e) => {
+    const x = e.target.closest('.notice-x');
+    if (!x) return;
+    const n = x.closest('.notice');
+    dismissedNotices.add(n.dataset.key);
+    n.remove();
   });
 
   applyI18n();
@@ -1363,7 +1450,7 @@ function init() {
     renderHealthBox();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { closeSettings(); closeNav(); hideTip(); }
+    if (e.key === 'Escape') { closeSettings(); closeNav(); hideTip(); toggleThemePop(false); }
   });
 
   const wantsExpand = () => /[#&]expand\b/.test(location.hash);

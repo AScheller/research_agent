@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de" data-theme="dark">
+<html lang="de" data-palette="graphite" data-mode="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +8,16 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b7bff'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cg fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='16' cy='9' r='2.6'/%3E%3Ccircle cx='9' cy='21' r='2.6'/%3E%3Ccircle cx='23' cy='21' r='2.6'/%3E%3Cpath d='M14.6 11.3 10.4 18.7M17.4 11.3l4.2 7.4M11.6 21h8.8'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<script>
+  // Theme vor dem ersten Zeichnen setzen (kein Aufflackern)
+  try {
+    var d = document.documentElement, p = localStorage.getItem('ra-palette') || 'graphite';
+    var m = localStorage.getItem('ra-mode') || localStorage.getItem('ra-theme') || 'system';
+    if (m === 'system') m = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    d.dataset.palette = p; d.dataset.mode = m;
+  } catch (e) { /* ohne localStorage: Standard */ }
+</script>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -33,6 +42,15 @@
     <div class="history" id="history"></div>
 
     <div class="side-foot">
+      <div class="theme-pop hidden" id="theme-pop" role="dialog" data-i18n-title="choose_theme">
+        <div class="tp-head"><span data-i18n="theme">Design</span></div>
+        <div class="tp-grid" id="tp-grid"></div>
+        <div class="seg seg-sm tp-modes" id="seg-mode" role="radiogroup">
+          <button type="button" data-v="dark" data-i18n="mode_dark">Dunkel</button>
+          <button type="button" data-v="light" data-i18n="mode_light">Hell</button>
+          <button type="button" data-v="system" data-i18n="mode_system">System</button>
+        </div>
+      </div>
       <button class="status-pill" id="pill-llm" data-state="unknown">
         <span class="dot"></span><span class="pill-label">LLM</span><span class="pill-val">…</span>
       </button>
@@ -45,7 +63,8 @@
           <button type="button" data-v="en">EN</button>
         </div>
         <div class="spacer"></div>
-        <button class="icon-btn" id="btn-theme" data-i18n-title="toggle_theme"><i data-icon="moon"></i></button>
+        <button class="icon-btn" id="btn-mode" data-i18n-title="toggle_theme"><i data-icon="moon"></i></button>
+        <button class="icon-btn" id="btn-theme" data-i18n-title="choose_theme" aria-haspopup="dialog" aria-expanded="false"><i data-icon="palette"></i></button>
         <button class="icon-btn" id="btn-settings" data-i18n-title="settings"><i data-icon="sliders"></i></button>
       </div>
     </div>
