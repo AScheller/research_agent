@@ -98,7 +98,7 @@ flowchart LR
 ### Starten
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/research_agent.git
+git clone https://github.com/AScheller/research_agent.git
 cd research_agent
 LLM_BASE_URL=http://localhost:8000/v1 LLM_MODEL=gemma-4-26b cargo run --release
 ```
