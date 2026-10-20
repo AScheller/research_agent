@@ -85,7 +85,7 @@ flowchart LR
 a live run on Gemma 4. It shows planning, tool calls, drafting, review, the final report with
 citations, theme switching and the language switch. Waiting times are sped up.
 
-<img src="docs/screenshots/themes/graphite-dark.png" alt="Research run with workflow timeline and cited report" width="100%">
+<img src="docs/screenshots/run.png" alt="Research run with workflow timeline and cited report (Nord light theme)" width="100%">
 
 | Behind the scenes: tool calls & hits | Start page |
 |---|---|

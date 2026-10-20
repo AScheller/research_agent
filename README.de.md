@@ -88,7 +88,7 @@ ein echter Lauf mit Gemma 4. Zu sehen sind Planung, Tool-Aufrufe, Entwurf, Revie
 Bericht mit Quellenangaben sowie der Wechsel von Theme und Sprache. Wartezeiten sind beschleunigt.
 Die Oberfläche im Video ist auf Englisch.
 
-<img src="docs/screenshots/themes/graphite-dark.png" alt="Recherche mit Workflow-Zeitleiste und Bericht mit Quellenangaben" width="100%">
+<img src="docs/screenshots/run.png" alt="Recherche mit Workflow-Zeitleiste und Bericht mit Quellenangaben (Theme Nord hell)" width="100%">
 
 | Hinter den Kulissen: Tool-Aufrufe & Treffer | Startseite |
 |---|---|
