@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research Agent</title>
+<meta name="description" content="Reflective Research Agent – planning, tool use and reflection with Gemma 4 and SearXNG">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b7bff'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cg fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='16' cy='9' r='2.6'/%3E%3Ccircle cx='9' cy='21' r='2.6'/%3E%3Ccircle cx='23' cy='21' r='2.6'/%3E%3Cpath d='M14.6 11.3 10.4 18.7M17.4 11.3l4.2 7.4M11.6 21h8.8'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<div class="app" id="app">
+  <!-- ============ Sidebar ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5.5" r="2.2"/><circle cx="5.5" cy="17" r="2.2"/><circle cx="18.5" cy="17" r="2.2"/><path d="M10.9 7.5 6.7 15M13.1 7.5l4.2 7.5M7.7 17h8.6"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Research Agent</div>
+        <div class="brand-sub" data-i18n="brand_sub">reflektierend · tool-nutzend</div>
+      </div>
+    </div>
+
+    <button class="btn btn-new" id="btn-new"><i data-icon="plus"></i><span data-i18n="new_research">Neue Recherche</span></button>
+
+    <div class="side-label" data-i18n="history">Verlauf</div>
+    <div class="history" id="history"></div>
+
+    <div class="side-foot">
+      <button class="status-pill" id="pill-llm" data-state="unknown">
+        <span class="dot"></span><span class="pill-label">LLM</span><span class="pill-val">…</span>
+      </button>
+      <button class="status-pill" id="pill-searx" data-state="unknown">
+        <span class="dot"></span><span class="pill-label">SearXNG</span><span class="pill-val">…</span>
+      </button>
+      <div class="foot-actions">
+        <div class="seg seg-sm" id="seg-ui" role="radiogroup" data-i18n-title="ui_language">
+          <button type="button" data-v="de">DE</button>
+          <button type="button" data-v="en">EN</button>
+        </div>
+        <div class="spacer"></div>
+        <button class="icon-btn" id="btn-theme" data-i18n-title="toggle_theme"><i data-icon="moon"></i></button>
+        <button class="icon-btn" id="btn-settings" data-i18n-title="settings"><i data-icon="sliders"></i></button>
+      </div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ============ Main ============ -->
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="btn-menu" data-i18n-title="menu"><i data-icon="menu"></i></button>
+      <span class="topbar-title">Research Agent</span>
+    </header>
+
+    <!-- Composer -->
+    <section class="composer" id="composer">
+      <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="eyebrow">Reflective Research Agent — Planung &amp; Tool-Nutzung</span></div>
+      <h1 data-i18n-html="hero_title">Was möchtest du <span class="grad">erforschen</span>?</h1>
+      <p class="lede"><span data-i18n="hero_lede">Ein Planer zerlegt deine Frage in Schritte. Research-Agenten durchsuchen Web, arXiv und Wikipedia, ein Writer verfasst den Bericht, und ein Editor reflektiert und verbessert ihn – angetrieben von</span> <b id="hero-model">gemma-4-26b</b>.</p>
+
+      <div class="prompt-card">
+        <div class="prompt-inner">
+          <textarea id="prompt" rows="4" data-i18n-ph="prompt_placeholder"></textarea>
+          <div class="prompt-bar">
+            <div class="opt">
+              <span class="opt-label" data-i18n="depth">Tiefe</span>
+              <div class="seg" id="seg-depth" role="radiogroup">
+                <button type="button" data-v="quick" data-i18n="depth_quick">Schnell</button>
+                <button type="button" data-v="standard" class="on" data-i18n="depth_standard">Standard</button>
+                <button type="button" data-v="deep" data-i18n="depth_deep">Gründlich</button>
+              </div>
+            </div>
+            <div class="opt" data-i18n-title="report_language_hint">
+              <span class="opt-label" data-i18n="report_language">Bericht</span>
+              <div class="seg" id="seg-lang" role="radiogroup">
+                <button type="button" data-v="de" class="on">DE</button>
+                <button type="button" data-v="en">EN</button>
+                <button type="button" data-v="auto">Auto</button>
+              </div>
+            </div>
+            <div class="spacer"></div>
+            <span class="kbd-hint"><kbd data-i18n="kbd_ctrl">Strg</kbd> + <kbd>↵</kbd></span>
+            <button class="btn btn-primary" id="btn-start"><span data-i18n="start">Recherche starten</span><i data-icon="arrow"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="tip"><i data-icon="spark"></i><span data-i18n-html="tip"></span></div>
+      <div class="examples" id="examples"></div>
+
+      <div class="pipeline">
+        <div class="pipe-card"><div class="pipe-ic plan"><i data-icon="plan"></i></div><div><b data-i18n="planner">Planer</b><span data-i18n="pipe_planner"></span></div></div>
+        <div class="pipe-arrow"><i data-icon="arrow"></i></div>
+        <div class="pipe-card"><div class="pipe-ic research"><i data-icon="search"></i></div><div><b>Research agent</b><span data-i18n="pipe_research"></span></div></div>
+        <div class="pipe-arrow"><i data-icon="arrow"></i></div>
+        <div class="pipe-card"><div class="pipe-ic writer"><i data-icon="pen"></i></div><div><b>Writer agent</b><span data-i18n="pipe_writer"></span></div></div>
+        <div class="pipe-arrow"><i data-icon="arrow"></i></div>
+        <div class="pipe-card"><div class="pipe-ic editor"><i data-icon="review"></i></div><div><b>Editor agent</b><span data-i18n="pipe_editor"></span></div></div>
+      </div>
+
+      <p class="made-by"><span data-i18n="made_by">Open-Source-Projekt von</span> <a href="https://ki-servicehaus.de/?utm_source=research_agent&amp;utm_medium=app&amp;utm_campaign=research_agent" target="_blank" rel="noopener">KI-Servicehaus</a></p>
+    </section>
+
+    <!-- Run view -->
+    <section class="run hidden" id="run">
+      <div class="card run-head">
+        <div class="run-top">
+          <div class="run-q-wrap">
+            <div class="run-label" data-i18n="research_question">Recherchefrage</div>
+            <div class="run-q" id="run-q"></div>
+          </div>
+          <div class="run-actions">
+            <button class="btn btn-ghost btn-sm" id="btn-rerun" data-i18n-title="edit_hint"><i data-icon="redo"></i><span data-i18n="edit">Bearbeiten</span></button>
+            <button class="btn btn-danger btn-sm" id="btn-cancel"><i data-icon="stop"></i><span data-i18n="cancel">Abbrechen</span></button>
+          </div>
+        </div>
+        <div class="run-stats">
+          <span class="badge" id="run-status" data-s="running"></span>
+          <span class="stat"><i data-icon="clock"></i><span id="run-time">00:00</span></span>
+          <span class="stat"><i data-icon="plan"></i><span id="run-steps">–</span><span data-i18n="steps">Schritte</span></span>
+          <span class="stat"><i data-icon="link"></i><span id="run-sources">0</span><span data-i18n="sources_lc">Quellen</span></span>
+          <span class="stat stat-model"><i data-icon="spark"></i><span id="run-model">–</span></span>
+        </div>
+        <div class="notices" id="notices"></div>
+        <div class="run-error hidden" id="run-error"></div>
+        <div class="progress"><div class="bar" id="run-bar"></div></div>
+      </div>
+
+      <div class="run-grid">
+        <div class="card workflow">
+          <div class="card-title">
+            <span class="ct-left"><i data-icon="plan"></i>Workflow</span>
+            <button class="btn btn-ghost btn-xs" id="btn-expand-all"></button>
+          </div>
+          <div class="wf-scroll" id="wf-scroll">
+            <div class="plan-status" id="plan-status"></div>
+            <ol class="steps" id="steps"></ol>
+          </div>
+        </div>
+
+        <div class="card report">
+          <div class="report-bar">
+            <div class="tabs" role="tablist">
+              <button class="tab on" data-tab="report" role="tab"><i data-icon="paper"></i><span data-i18n="tab_report">Bericht</span></button>
+              <button class="tab" data-tab="sources" role="tab"><i data-icon="link"></i><span data-i18n="tab_sources">Quellen</span> <span class="count" id="src-count">0</span></button>
+            </div>
+            <span class="report-info" id="report-info"></span>
+            <div class="report-actions">
+              <button class="icon-btn" id="btn-copy" data-i18n-title="copy_md"><i data-icon="copy"></i></button>
+              <button class="icon-btn" id="btn-download" data-i18n-title="download_md"><i data-icon="download"></i></button>
+              <button class="icon-btn" id="btn-print" data-i18n-title="print"><i data-icon="print"></i></button>
+            </div>
+          </div>
+          <div class="report-scroll" id="report-scroll">
+            <div class="tab-panel" id="panel-report"><article class="md report-body" id="report-body"></article></div>
+            <div class="tab-panel hidden" id="panel-sources">
+              <div class="src-filters" id="src-filters"></div>
+              <div class="sources" id="sources"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ Settings ============ -->
+<div class="modal hidden" id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="settings-title" data-i18n="settings">Einstellungen</h3>
+      <button class="icon-btn" data-close data-i18n-title="close"><i data-icon="x"></i></button>
+    </div>
+    <form id="settings-form" autocomplete="off">
+      <fieldset>
+        <legend data-i18n="legend_llm">Sprachmodell · OpenAI-kompatibel</legend>
+        <label><span>Base-URL</span><input name="llm.base_url" placeholder="http://localhost:8000/v1"></label>
+        <label><span data-i18n="model">Modell</span><input name="llm.model" list="model-list" placeholder="gemma-4-26b"><datalist id="model-list"></datalist></label>
+        <div class="row">
+          <label><span>API-Key</span><input name="llm.api_key" type="password" data-i18n-ph="optional"></label>
+          <label><span data-i18n="temperature">Temperatur</span><input name="llm.temperature" type="number" step="0.1" min="0" max="2"></label>
+          <label><span>Max. Tokens</span><input name="llm.max_tokens" type="number" min="512" step="512"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend data-i18n="legend_search">Websuche · SearXNG</legend>
+        <label><span>SearXNG-URL</span><input name="search.searxng_url" placeholder="http://searxng.local:8080"></label>
+        <p class="hint" data-i18n-html="searx_hint"></p>
+        <div class="row">
+          <label><span data-i18n="search_language">Suchsprache</span><input name="search.language" placeholder="all / de / en"></label>
+          <label><span data-i18n="max_results">Max. Treffer</span><input name="search.max_results" type="number" min="1" max="20"></label>
+          <label><span data-i18n="wikipedia_language">Wikipedia-Sprache</span><input name="search.wikipedia_lang" placeholder="de"></label>
+        </div>
+        <div class="row checks">
+          <label class="check"><input type="checkbox" name="search.enable_arxiv"><span data-i18n="arxiv_search">arXiv-Suche</span></label>
+          <label class="check"><input type="checkbox" name="search.enable_wikipedia"><span data-i18n="wikipedia_search">Wikipedia-Suche</span></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Agent</legend>
+        <div class="row">
+          <label><span data-i18n="max_steps">Max. Planschritte</span><input name="agent.max_steps" type="number" min="3" max="12"></label>
+          <label><span data-i18n="tool_rounds">Tool-Runden / Schritt</span><input name="agent.max_tool_rounds" type="number" min="1" max="12"></label>
+          <label><span data-i18n="chars_per_page">Zeichen pro Seite</span><input name="agent.fetch_max_chars" type="number" min="1000" step="1000"></label>
+        </div>
+      </fieldset>
+      <div class="health-box" id="health-box"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="btn-test" data-i18n="check_connection">Verbindung prüfen</button>
+        <button type="submit" class="btn btn-primary" data-i18n="save">Speichern</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="tooltip hidden" id="tooltip" role="tooltip"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/app.js"></script>
+</body>
+</html>

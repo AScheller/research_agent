@@ -1,0 +1,6 @@
+/target/
+/data/
+# local configuration (may contain internal hostnames / API keys) – see config.example.toml
+/config.toml
+# local Claude Code settings
+/.claude/

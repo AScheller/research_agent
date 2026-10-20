@@ -1,0 +1,35 @@
+# Reflective Research Agent – example configuration
+# Copy to `config.toml` (or just start the server once – it creates config.toml with these defaults).
+# Every value can also be changed in the web UI (Settings) or overridden by environment variables:
+#   LLM_BASE_URL, LLM_MODEL, LLM_API_KEY, SEARXNG_URL, RA_PORT, RA_CONFIG, RA_DATA_DIR
+
+[server]
+host = "0.0.0.0"
+port = 8787
+
+[llm]
+# Any OpenAI-compatible endpoint (vLLM, llama.cpp server, llama-swap, Ollama /v1, LM Studio, …)
+base_url = "http://localhost:8000/v1"
+model = "gemma-4-26b"
+api_key = ""
+temperature = 0.4
+max_tokens = 12000
+
+[search]
+# Base URL of your SearXNG instance, e.g. "http://localhost:8080" – empty disables web search
+searxng_url = ""
+# SearXNG language filter: "all", "de", "en", …
+language = "all"
+max_results = 8
+# Wikipedia language when the report language is "Auto"
+wikipedia_lang = "en"
+enable_arxiv = true
+enable_wikipedia = true
+
+[agent]
+# Planned steps (research + writer + editor), the final report step is added automatically
+max_steps = 7
+# Tool rounds per research step
+max_tool_rounds = 6
+# Characters per fetched page passed to the model
+fetch_max_chars = 8000
