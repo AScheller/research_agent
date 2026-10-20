@@ -14,9 +14,9 @@ and critiques its own draft before delivering it. Runs against any OpenAI-compat
 
 **English** · [Deutsch](README.de.md)
 
-<img src="docs/screenshots/themes/graphite-dark.png" alt="Research run with workflow timeline and cited report" width="100%">
+<a href="https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4"><img src="docs/demo-preview.webp" alt="Animated demo: a live research run and theme switching" width="100%"></a>
 
-**[▶ Watch the demo video (MP4)](docs/demo.mp4)**
+**[▶ Full demo video (MP4, 2:09, download)](https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4)**
 
 </div>
 
@@ -81,9 +81,11 @@ flowchart LR
 
 ## Demo & screenshots
 
-**[▶ Demo video (MP4)](docs/demo.mp4):** a live run on Gemma 4. It shows planning, tool calls,
-drafting, review, the final report with citations, theme switching and the language switch. Waiting
-times are sped up.
+**[▶ Demo video (MP4, 2:09, download)](https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4):**
+a live run on Gemma 4. It shows planning, tool calls, drafting, review, the final report with
+citations, theme switching and the language switch. Waiting times are sped up.
+
+<img src="docs/screenshots/themes/graphite-dark.png" alt="Research run with workflow timeline and cited report" width="100%">
 
 | Behind the scenes: tool calls & hits | Start page |
 |---|---|
