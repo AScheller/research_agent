@@ -14,9 +14,9 @@ und prüft den eigenen Entwurf, bevor er ihn abliefert. Funktioniert mit jedem O
 
 [English](README.md) · **Deutsch**
 
-<a href="https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4"><img src="docs/demo-preview.webp" alt="Animierte Demo: eine laufende Recherche und der Wechsel der Themes" width="100%"></a>
+<a href="https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4"><img src="docs/demo-preview.webp" alt="Animierte Demo (Theme Nord hell): eine laufende Recherche und der Wechsel der Themes" width="100%"></a>
 
-**[▶ Komplettes Demovideo (MP4, 2:09, Download)](https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4)**
+**[▶ Komplettes Demovideo (MP4, 2:04, Download)](https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4)**
 
 </div>
 
@@ -83,7 +83,7 @@ flowchart LR
 
 ## Demo & Screenshots
 
-**[▶ Demovideo (MP4, 2:09, Download)](https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4):**
+**[▶ Demovideo (MP4, 2:04, Download)](https://github.com/AScheller/research_agent/raw/main/docs/demo.mp4):**
 ein echter Lauf mit Gemma 4. Zu sehen sind Planung, Tool-Aufrufe, Entwurf, Review, der fertige
 Bericht mit Quellenangaben sowie der Wechsel von Theme und Sprache. Wartezeiten sind beschleunigt.
 Die Oberfläche im Video ist auf Englisch.
